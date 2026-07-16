@@ -76,6 +76,47 @@ const SLOTS = [{ key: "midi", label: "Midi" }, { key: "soir", label: "Soir" }];
 const DEFAULT_COURSE_CATEGORIES = ["Entrée", "Plat principal", "Accompagnement", "Soupe", "Dessert", "Petit-déjeuner", "Autre"];
 const DEFAULT_MENU_CATEGORIES = ["Rapide", "Gourmand", "Léger", "Copieux", "Végé"];
 
+function ing(name, quantity, unit) { return { id: uid(), name, quantity, unit: unit || "" }; }
+
+function DEFAULT_RECIPES() { return [
+  {
+    id: uid(), category: "Plat principal", menuTags: ["Rapide", "Gourmand"], servings: 4, createdAt: Date.now(),
+    title: "Pâtes à la carbonara",
+    ingredients: [ing("Spaghetti","400","g"), ing("Lardons","200","g"), ing("Œufs","3",""), ing("Parmesan","80","g"), ing("Poivre","1","pincée")],
+    instructions: "Cuire les pâtes al dente.\nFaire revenir les lardons à la poêle.\nMélanger œufs et parmesan hors du feu.\nÉgoutter les pâtes, ajouter les lardons puis le mélange œufs-parmesan en remuant hors du feu.\nPoivrer généreusement et servir aussitôt.",
+  },
+  {
+    id: uid(), category: "Entrée", menuTags: ["Léger", "Rapide"], servings: 4, createdAt: Date.now(),
+    title: "Salade de saison",
+    ingredients: [ing("Salade","1",""), ing("Tomate","2",""), ing("Concombre","1",""), ing("Huile d'olive","2","cuillère à soupe"), ing("Vinaigre","1","cuillère à soupe")],
+    instructions: "Laver et couper la salade, les tomates et le concombre.\nMélanger dans un saladier.\nAssaisonner avec l'huile et le vinaigre juste avant de servir.",
+  },
+  {
+    id: uid(), category: "Plat principal", menuTags: ["Copieux"], servings: 4, createdAt: Date.now(),
+    title: "Poulet rôti et pommes de terre",
+    ingredients: [ing("Poulet entier","1",""), ing("Pomme de terre","1","kg"), ing("Ail","4","gousses"), ing("Huile d'olive","3","cuillère à soupe"), ing("Thym","1","pincée")],
+    instructions: "Préchauffer le four à 200°C.\nDisposer le poulet et les pommes de terre coupées dans un plat.\nArroser d'huile d'olive, ajouter l'ail et le thym.\nEnfourner 1h15 en arrosant régulièrement.",
+  },
+  {
+    id: uid(), category: "Plat principal", menuTags: ["Végé", "Gourmand"], servings: 4, createdAt: Date.now(),
+    title: "Curry de légumes",
+    ingredients: [ing("Lait de coco","400","ml"), ing("Pois chiches","400","g"), ing("Courgette","2",""), ing("Carotte","2",""), ing("Curry","2","cuillère à soupe"), ing("Riz","300","g")],
+    instructions: "Faire revenir les légumes coupés en dés.\nAjouter le curry et mélanger 1 min.\nVerser le lait de coco et les pois chiches, laisser mijoter 20 min.\nServir avec le riz cuit.",
+  },
+  {
+    id: uid(), category: "Soupe", menuTags: ["Léger"], servings: 4, createdAt: Date.now(),
+    title: "Soupe de légumes",
+    ingredients: [ing("Carotte","3",""), ing("Poireau","2",""), ing("Pomme de terre","2",""), ing("Oignon","1",""), ing("Bouillon de légumes","1","cube")],
+    instructions: "Éplucher et couper tous les légumes.\nFaire revenir l'oignon, ajouter les autres légumes et couvrir d'eau avec le bouillon.\nCuire 25 min puis mixer.",
+  },
+  {
+    id: uid(), category: "Dessert", menuTags: ["Gourmand"], servings: 6, createdAt: Date.now(),
+    title: "Crumble aux pommes",
+    ingredients: [ing("Pomme","6",""), ing("Farine","150","g"), ing("Beurre","100","g"), ing("Sucre","100","g")],
+    instructions: "Préchauffer le four à 180°C.\nÉplucher et couper les pommes, les disposer dans un plat.\nMélanger farine, beurre et sucre du bout des doigts jusqu'à obtenir un sable grossier.\nRépartir sur les pommes et enfourner 30 min.",
+  },
+]; }
+
 const CATEGORY_COLORS = {
   "Entrée": "#6B8F71", "Plat principal": "#C89B3C", "Accompagnement": "#8A9A5B", "Soupe": "#7B9E9A",
   "Dessert": "#B4453A", "Petit-déjeuner": "#B98A5E", "Autre": "#8B8378",
@@ -966,7 +1007,13 @@ function CoursesView({ menu, recipes, weekKey, checked, onToggle }) {
 --------------------------------------------------------------- */
 function App() {
   const [tab, setTab] = useState("planning");
-  const [recipes, setRecipes] = useState(() => storageGet("recipes", []));
+  const [recipes, setRecipes] = useState(() => {
+    const existing = storageGet("recipes", null);
+    if (existing !== null) return existing;
+    const seeded = DEFAULT_RECIPES();
+    storageSet("recipes", seeded);
+    return seeded;
+  });
   const [courseCategories] = useState(DEFAULT_COURSE_CATEGORIES);
   const [menuCategories, setMenuCategories] = useState(() => storageGet("menu-categories", DEFAULT_MENU_CATEGORIES));
   const [weekMonday, setWeekMonday] = useState(getMonday(new Date()));
