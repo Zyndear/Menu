@@ -1062,7 +1062,7 @@ function App() {
   return (
     <div className="min-h-screen w-full" style={{ background: "#24312B" }}>
       <div className="max-w-lg mx-auto min-h-screen relative" style={{ background: "#F4EEDD" }}>
-        <div className="px-5 pt-6 pb-3 flex items-start justify-between" style={{ background: "#24312B" }}>
+        <div className="px-5 pb-3 flex items-start justify-between" style={{ background: "#24312B", paddingTop: "max(1.5rem, calc(env(safe-area-inset-top) + 0.75rem))" }}>
           <div>
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#C89B3C] mb-0.5">Carnet de la semaine</p>
             <h1 className="font-serif text-2xl text-[#FBF5E9]">Mes Menus</h1>
